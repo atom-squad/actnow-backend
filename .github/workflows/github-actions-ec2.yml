@@ -31,5 +31,4 @@ jobs:
           script: |
                 cd ~/actnow-backend
                 npm install
-                nohup npm restart &
-                cd .
+                nohup npm run start:prod &
