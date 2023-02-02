@@ -29,6 +29,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-                cd ~/actnow-backend
+                cd ${{ secrets.TARGET_DIR }}
                 npm install
-                npm run start:prod &
+                pm2 restart dist/main.js --name actnow-backend
