@@ -31,4 +31,4 @@ jobs:
           script: |
                 cd ~/actnow-backend
                 npm install
-                npm restart
+                nohup npm restart &
