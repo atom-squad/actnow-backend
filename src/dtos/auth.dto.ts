@@ -28,5 +28,4 @@ username: string;
 @IsNotEmpty()
 password: string;
 
-
 }
