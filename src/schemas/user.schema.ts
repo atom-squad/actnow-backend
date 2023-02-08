@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { propConfig } from 'native-base/lib/typescript/theme/styled-system';
+
 
 export type UserDocument = HydratedDocument<User>;
 

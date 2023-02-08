@@ -8,4 +8,11 @@ export class UserService {
 
     constructor(@InjectModel(User.name) private userModel: Model <UserDocument> ) {}
 
+    async getUserByEmail(email: string){
+        return this.userModel.findOne({
+            email
+        })
+        .exec()
+    }
+
 }
