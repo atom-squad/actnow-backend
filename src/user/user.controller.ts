@@ -8,10 +8,5 @@ export class UserController {
     
     constructor(private readonly userService: UserService){}
 
-    @Post('/signup')
-    signup(
-        @Body() signupDto: SignupDto
-    ){
-        return this.userService.signup(signupDto)
-    }
+
 }

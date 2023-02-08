@@ -29,3 +29,11 @@ username: string;
 password: string;
 
 }
+
+export class SigninDto {
+    @IsEmail()
+    email: string;
+  
+    @IsString()
+    password: string;
+  }
