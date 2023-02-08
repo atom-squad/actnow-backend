@@ -9,11 +9,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [UserModule, 
-            JwtModule.registerAsync({useFactory: () => ({
-                    secret: process.env.JWT_SECRET,
-                    signOptions: {
-                    expiresIn: '15d'
-                }})}),
+            JwtModule.registerAsync({
+              useFactory: () => ({
+                  secret: 'secret',
+                  signOptions: { expiresIn: '3600s' },
+                 }),
+           }),
             MongooseModule.forFeature([{
                   name: User.name,
                   schema: UserSchema
