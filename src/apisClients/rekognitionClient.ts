@@ -22,6 +22,7 @@ const params = {
 
 export const execRekognitionReq = async (picture: Express.Multer.File) => {
   params.Image.Bytes = picture.buffer;
+  const labelsData = [];
   return new Promise((success, failure) => {
     rekognitionClient.detectLabels(params, function (err, response) {
       if (err) {
@@ -29,7 +30,15 @@ export const execRekognitionReq = async (picture: Express.Multer.File) => {
         return failure(err);
       } else {
         console.log('Success', response);
-        return success(response.Labels);
+        response.Labels.forEach((label) => {
+          const labelObject = {
+            Label: label.Name,
+            Confidence: label.Confidence,
+            Categories: label.Categories,
+          };
+          labelsData.push(labelObject);
+        });
+        return success(labelsData);
       }
     });
   });
