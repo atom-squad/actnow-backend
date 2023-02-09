@@ -1,6 +1,4 @@
 import * as AWS from 'aws-sdk';
-import * as path from 'path';
-import * as fs from 'fs';
 
 const config = new AWS.Config({
   accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -12,23 +10,18 @@ AWS.config.update({
   region: 'us-west-2',
 });
 
-const imageName = 'image.jpeg';
-const imagePath = path.resolve('src/apisClients/', imageName);
-const image = fs.readFileSync(imagePath);
-const buffer = new Buffer(image);
-
 const rekognitionClient = new AWS.Rekognition();
 const params = {
   Features: ['GENERAL_LABELS'],
   Image: {
-    // eslint-disable-next-line prettier/prettier
-    Bytes: buffer
+    Bytes: null,
   },
   MaxLabels: 10,
   MinConfidence: 80,
 };
 
-export const execRekognitionReq = async () => {
+export const execRekognitionReq = async (picture: Express.Multer.File) => {
+  params.Image.Bytes = picture.buffer;
   return new Promise((success, failure) => {
     rekognitionClient.detectLabels(params, function (err, response) {
       if (err) {
