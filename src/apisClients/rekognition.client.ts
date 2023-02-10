@@ -16,7 +16,7 @@ const params = {
   Image: {
     Bytes: null,
   },
-  MaxLabels: 10,
+  MaxLabels: 3,
   MinConfidence: 80,
 };
 
