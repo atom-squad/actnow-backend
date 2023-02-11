@@ -6,8 +6,8 @@ on:
       - dev
 
 jobs:
-  build:
-    name: Build the app
+  deploy:
+    name: Deploy to EC2
     runs-on: ubuntu-latest
 
     steps:
@@ -19,12 +19,7 @@ jobs:
 
       - name: Build the app
         run: npm run build
-        
-  deploy:
-    name: Deploy to EC2
-    runs-on: ubuntu-latest
 
-    steps:
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         env:
