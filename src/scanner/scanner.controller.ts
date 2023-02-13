@@ -3,10 +3,13 @@ import {
   FileTypeValidator,
   Get,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ScannerService } from './scanner.service';
 
@@ -14,6 +17,7 @@ import { ScannerService } from './scanner.service';
 export class ScannerController {
   constructor(private readonly scannerService: ScannerService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('emission')
   @UseInterceptors(FileInterceptor('file'))
   getEmission(
@@ -27,6 +31,12 @@ export class ScannerController {
     )
     picture: Express.Multer.File,
   ): Promise<any> {
-    return this.scannerService.getEmission(picture);
+    return this.scannerService.getLabels(picture);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('factor/:label')
+  getFactor(@Param('label') label: string): Promise<any> {
+    return this.scannerService.getEmission(label);
   }
 }

@@ -20,7 +20,9 @@ const params = {
   MinConfidence: 80,
 };
 
-export const execRekognitionReq = async (picture: Express.Multer.File) => {
+export const execRekognitionReq = async (
+  picture: Express.Multer.File,
+): Promise<any[]> => {
   params.Image.Bytes = picture.buffer;
   const labelsData = [];
   return new Promise((success, failure) => {
@@ -29,7 +31,7 @@ export const execRekognitionReq = async (picture: Express.Multer.File) => {
         console.log(err, err.stack);
         return failure(err);
       } else {
-        console.log('Success', response);
+        //console.log('Success', response);
         response.Labels.forEach((label) => {
           const labelObject = {
             Label: label.Name,

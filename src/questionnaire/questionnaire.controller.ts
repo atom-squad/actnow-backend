@@ -13,6 +13,7 @@ export class QuestionnaireController {
     return this.questionnaireService.getHello();
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('questions')
   async getQuestions(): Promise<User[]> {
     return this.questionnaireService.findUsers();
