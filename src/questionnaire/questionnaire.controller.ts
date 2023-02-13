@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/schemas/user.schema';
 import { QuestionnaireService } from './questionnaire.service';
 
@@ -6,6 +7,7 @@ import { QuestionnaireService } from './questionnaire.service';
 export class QuestionnaireController {
   constructor(private readonly questionnaireService: QuestionnaireService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   getHello(): string {
     return this.questionnaireService.getHello();
