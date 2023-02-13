@@ -3,6 +3,7 @@ import {
   FileTypeValidator,
   Get,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   UploadedFile,
   UseInterceptors,
@@ -27,6 +28,11 @@ export class ScannerController {
     )
     picture: Express.Multer.File,
   ): Promise<any> {
-    return this.scannerService.getEmission(picture);
+    return this.scannerService.getLabels(picture);
+  }
+
+  @Get('factor/:label')
+  getFactor(@Param('label') label: string): Promise<any> {
+    return this.scannerService.getEmission(label);
   }
 }
