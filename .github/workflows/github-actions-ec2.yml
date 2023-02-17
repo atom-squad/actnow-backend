@@ -14,6 +14,12 @@ jobs:
       - name: Checkout the files
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the app
+        run: npm run build
+
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         env:
@@ -22,7 +28,7 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
       
-      - name: SSH, install dependencies and restart the app
+      - name: SSH to restart the app
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.HOST_DNS }}
@@ -30,5 +36,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
                 cd ${{ secrets.TARGET_DIR }}
-                npm install
                 pm2 restart dist/main.js --name actnow-backend
