@@ -5,6 +5,7 @@ import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ScannerModule } from './scanner/scanner.module';
+import { ActionsModule } from './actions/actions.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ScannerModule } from './scanner/scanner.module';
     UserModule,
     AuthModule,
     ScannerModule,
+    ActionsModule,
   ],
 })
 export class AppModule {}
