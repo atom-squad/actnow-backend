@@ -2,23 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { execRekognitionReq } from 'src/apisClients/rekognition.client';
 import { HttpService } from '@nestjs/axios';
 import { getEmissionClimatiq } from 'src/apisClients/climatiq.client';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from 'src/schemas/user.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class ScannerService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+  ) {}
 
-  async getLabels(picture: Express.Multer.File): Promise<any> {
+  async getLabels(
+    picture: Express.Multer.File,
+    userEmail: string,
+  ): Promise<any> {
     const labels = await execRekognitionReq(picture);
     let result = undefined;
     if (labels != undefined && labels.length > 0) {
       let pos = 0;
       while (result == undefined || pos < labels.length) {
         console.log('Analyzing ', labels[pos].Label);
-        result = await this.getEmission(labels[pos].Label);
+        result = await this.getEmission(labels[pos].Label, userEmail);
         if (result.error == undefined) break;
         pos++;
       }
-      //save info in db
     } else {
       result = {
         Error: 'Sorry, we could not recognize your image',
@@ -28,7 +36,7 @@ export class ScannerService {
     return result;
   }
 
-  async getEmission(label: string): Promise<any> {
+  async getEmission(label: string, userEmail: string): Promise<any> {
     let tries = 0;
     const regions = ['CA', 'GLOBAL', 'US'];
     let result = undefined;
@@ -43,10 +51,30 @@ export class ScannerService {
         console.log('Warn: ', `No data found for region ${regions[tries]}`);
         tries++;
       } else {
+        console.log('Warn: ', `Data found for region ${regions[tries]}`);
+        await this.saveTxInDB(result, userEmail);
         break;
       }
     }
 
     return result;
+  }
+
+  async saveTxInDB(result: any, userEmail: string) {
+    const filter = { email: userEmail };
+    const update = {
+      $addToSet: {
+        scansHistory: [
+          {
+            scanValue: result.factor,
+            scanObject: result.label,
+            txDate: new Date().toLocaleDateString('en-CA', {
+              timeZone: 'America/Vancouver',
+            }),
+          },
+        ],
+      },
+    };
+    await this.userModel.findOneAndUpdate(filter, update);
   }
 }
