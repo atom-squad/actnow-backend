@@ -5,6 +5,7 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
+  Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -30,13 +31,14 @@ export class ScannerController {
       }),
     )
     picture: Express.Multer.File,
+    @Request() req,
   ): Promise<any> {
-    return this.scannerService.getLabels(picture);
+    return this.scannerService.getLabels(picture, req.user.email);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('factor/:label')
-  getFactor(@Param('label') label: string): Promise<any> {
-    return this.scannerService.getEmission(label);
+  getFactor(@Param('label') label: string, @Request() req): Promise<any> {
+    return this.scannerService.getEmission(label, req.user.email);
   }
 }

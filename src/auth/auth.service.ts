@@ -58,11 +58,8 @@ export class AuthService {
 
     async login(signinDto : SigninDto) {
         const {email, password} = signinDto
-        console.log(signinDto)
 
         const user = await this.validateUser(email, password)
-
-        console.log('user')
 
         if(!user) return null;
 
