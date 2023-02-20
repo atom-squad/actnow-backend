@@ -7,8 +7,7 @@ export class PostActionDto {
     @IsNotEmpty()
     actionId: string;
 
-    @IsDate()
-    @IsNotEmpty()
+
     txDate: Date;
-    
+
 }

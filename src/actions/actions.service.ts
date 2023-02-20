@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PostActionDto } from 'src/dtos/actions.dto';
 import { Action, ActionDocument } from 'src/schemas/action.schema';
-import { threadId } from 'worker_threads';
+import { User, UserDocument } from 'src/schemas/user.schema';
+
 
 @Injectable()
 export class ActionsService {
 
-    constructor(@InjectModel(Action.name) private actionModel: Model<ActionDocument>) {}
+    constructor(@InjectModel(Action.name) private actionModel: Model<ActionDocument>, 
+                @InjectModel(User.name) private userModel: Model<UserDocument>)  {}
+
 
     async getActionById(_id: string){
         return this.actionModel.findById({
@@ -19,5 +23,31 @@ export class ActionsService {
         const docs = await this.actionModel.find({ actionType: actionType})
 
         return docs
+    }
+
+    async postAction(postActionDto : PostActionDto, userEmail: string){
+        
+        const {actionId, txDate} = postActionDto
+
+        const filter = {email: userEmail}
+
+        console.log(actionId)
+        console.log(txDate)
+        console.log(filter)
+
+        const update = {
+            $addToSet: {
+                actionsDone: [
+                    {
+                        actionId: actionId,
+                        txDate: new Date().toLocaleDateString('en-CA', {
+                            timeZone: 'America/Vancouver',
+                        }),
+                    },
+                ],
+            },
+        };
+        
+        await this.userModel.findOneAndUpdate(filter,update)
     }
 }
