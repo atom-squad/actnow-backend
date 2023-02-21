@@ -20,4 +20,10 @@ export class ActionsController {
                @Request() req){
         return this.actionsService.postAction(postActionDto, req.user.email)
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('user/:id')
+    getUserActionsById(@Param('id') _id: string, @Request() req) {
+        return this.actionsService.getUserActionsById(req.user.userId)
+    }
 }

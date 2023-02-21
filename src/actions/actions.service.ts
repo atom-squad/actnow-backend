@@ -31,10 +31,6 @@ export class ActionsService {
 
         const filter = {email: userEmail}
 
-        console.log(actionId)
-        console.log(txDate)
-        console.log(filter)
-
         const update = {
             $addToSet: {
                 actionsDone: [
@@ -48,6 +44,22 @@ export class ActionsService {
             },
         };
         
+        console.log('testing')
+
         await this.userModel.findOneAndUpdate(filter,update)
+    }
+
+    async getUserActionsById(_id: string){
+
+        const user = await this.userModel.findById({
+            _id
+        }).exec()
+
+        const userActions = user.actionsDone
+
+        console.log(userActions)
+
+        return userActions
+
     }
 }
