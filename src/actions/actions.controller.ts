@@ -21,6 +21,12 @@ export class ActionsController {
     }
 
     @UseGuards(AuthGuard('jwt'))
+    @Get('id/:id')
+    getActionById(@Param('id') _id: string)  {
+        return this.actionsService.getActionById(_id)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
     @Post('newaction')
     postAction(@Body() postActionDto: PostActionDto,
                @Request() req){
