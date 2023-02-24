@@ -5,14 +5,17 @@ import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()
 export class UserService {
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-    constructor(@InjectModel(User.name) private userModel: Model <UserDocument>, ) {}
+  async getUserByEmail(email: string) {
+    return this.userModel
+      .findOne({
+        email,
+      })
+      .exec();
+  }
 
-
-        async getUserByEmail(email: string){
-        return this.userModel.findOne({
-            email
-        })
-        .exec()
-    }
+  async listUsers(): Promise<User[]> {
+    return this.userModel.find().exec();
+  }
 }
