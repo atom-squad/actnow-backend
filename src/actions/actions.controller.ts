@@ -9,6 +9,12 @@ export class ActionsController {
     constructor(private readonly actionsService: ActionsService) {}
 
     @UseGuards(AuthGuard('jwt'))
+    @Get('user')
+    async getUserActionsById( @Request() req): Promise<any[]> {
+        return this.actionsService.getUserActionsById(req.user.userId)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
     @Get(':type')
     getActionsByType(@Param('type') actionType: string){
         return this.actionsService.getActionsByType(actionType)
@@ -21,9 +27,5 @@ export class ActionsController {
         return this.actionsService.postAction(postActionDto, req.user.email)
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('user/:id')
-    getUserActionsById(@Param('id') _id: string, @Request() req) {
-        return this.actionsService.getUserActionsById(req.user.userId)
-    }
+
 }

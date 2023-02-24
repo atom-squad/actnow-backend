@@ -49,7 +49,7 @@ export class ActionsService {
         await this.userModel.findOneAndUpdate(filter,update)
     }
 
-    async getUserActionsById(_id: string){
+    async getUserActionsById(_id: string): Promise<any[]>{
 
         const user = await this.userModel.findById({
             _id
