@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   ProgressData,
   UserSectionData,
@@ -109,12 +109,36 @@ export class DashboardService {
     return progressData;
   }
 
-  calculateDptmPoints(users: [any], key: string): number {
+  calculateDptmPoints(users: any[], key: string): number {
     let points = 0;
-    users.forEach((user) => {
+    for (const user of users) {
       const userPoints = this.getMonthPoints(user.points, key);
       if (userPoints) points += userPoints;
-    });
+    }
+
     return points;
+  }
+
+  async getOrganizationActions(departmentId: number): Promise<any> {
+    const filter = {
+      'departments.id': departmentId,
+    };
+    const organization = await this.organizationModel.findOne(filter);
+    const users = await this.userService.listUsersPerOrganization(
+      organization._id,
+    );
+
+    return {
+      orgActions: this.calculateOrgActions(users),
+    };
+  }
+
+  calculateOrgActions(users: any[]): number {
+    let orgActions = 0;
+    for (const user of users) {
+      orgActions += user.actions;
+    }
+
+    return orgActions;
   }
 }

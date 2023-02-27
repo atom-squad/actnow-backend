@@ -18,4 +18,10 @@ export class DashboardController {
   getProgressData(@Request() req): Promise<any> {
     return this.dashboardService.getProgressData(req.user);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('org-actions')
+  getOrgActions(@Request() req): Promise<any> {
+    return this.dashboardService.getOrganizationActions(req.user.department);
+  }
 }

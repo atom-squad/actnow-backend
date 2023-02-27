@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
+import { Types } from 'mongoose';
 
 @Controller('user')
 export class UserController {
@@ -19,5 +19,15 @@ export class UserController {
     @Param('departmentId') departmentId: number,
   ): Promise<any[]> {
     return this.userService.getUsersPerDepartment(departmentId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('organization/:organizationId')
+  getUsersPerOrganization(
+    @Param('organizationId') organizationId: string,
+  ): Promise<any[]> {
+    return this.userService.listUsersPerOrganization(
+      new Types.ObjectId(organizationId),
+    );
   }
 }
