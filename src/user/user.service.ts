@@ -18,4 +18,19 @@ export class UserService {
   async listUsers(): Promise<User[]> {
     return this.userModel.find().exec();
   }
+
+  async getUsersPerDepartment(departmentId: number): Promise<any> {
+    const filter = {
+      department: departmentId,
+    };
+    const dptmUsersData = [];
+    const dptmUsers = await this.userModel.find(filter);
+    dptmUsers.forEach((user) => {
+      dptmUsersData.push({
+        userName: user.name,
+        points: user.pointsHistory,
+      });
+    });
+    return dptmUsersData;
+  }
 }

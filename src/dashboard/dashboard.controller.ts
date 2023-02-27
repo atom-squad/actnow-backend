@@ -12,4 +12,10 @@ export class DashboardController {
   getUserSection(@Request() req): Promise<UserSectionData> {
     return this.dashboardService.getUserSection(req.user);
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('progress')
+  getProgressData(@Request() req): Promise<any> {
+    return this.dashboardService.getProgressData(req.user);
+  }
 }
