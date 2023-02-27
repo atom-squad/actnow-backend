@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ScannerModule } from './scanner/scanner.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { ActionsModule } from './actions/actions.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     ScannerModule,
     DashboardModule,
     LeaderboardModule,
+    ActionsModule,
   ],
 })
 export class AppModule {}

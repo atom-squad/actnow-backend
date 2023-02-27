@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Category } from './category.schema';
 
@@ -7,14 +7,16 @@ export type ActionDocument = HydratedDocument<Action>;
 @Schema()
 export class Action {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
-  category: Category;
+  actionCategory: Category;
 
   @Prop()
-  type: string;
+  actionType: string;
 
   @Prop()
-  points: number;
+  actionPoints: number;
 
   @Prop()
-  description: string;
+  actionDescription: string;
 }
+
+export const ActionSchema = SchemaFactory.createForClass(Action);
