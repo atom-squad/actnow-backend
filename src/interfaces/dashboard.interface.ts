@@ -5,3 +5,18 @@ export interface UserSectionData {
   monthPoints: number;
   rankingPos: number;
 }
+
+export interface ProgressData {
+  personalProgress: [
+    {
+      month: string;
+      points: number;
+    },
+  ];
+  departmentProgress: [
+    {
+      month: string;
+      points: number;
+    },
+  ];
+}

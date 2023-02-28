@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema } from 'mongoose';
-import { UserSectionData } from 'src/interfaces/dashboard.interface';
+
 import {
   Organization,
   OrganizationDocument,
