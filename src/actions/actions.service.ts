@@ -44,7 +44,6 @@ export class ActionsService {
             },
         };
         
-        console.log('testing')
 
         await this.userModel.findOneAndUpdate(filter,update)
     }
@@ -56,10 +55,20 @@ export class ActionsService {
         }).exec()
 
         const userActions = user.actionsDone
+        
+        const userActionsDetails = []
+        for( const userAction of userActions){
+            const action = await this.actionModel.findById(userAction.actionId);
+            const actionD = {
+                id: action._id,
+                description: action.actionDescription,
+                points: action.actionPoints,
+                txDate: userAction.txDate
+            }
+            userActionsDetails.push(actionD);
+        }
 
-        console.log(userActions)
-
-        return userActions
+        return userActionsDetails
 
     }
 }
