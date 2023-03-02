@@ -5,6 +5,9 @@ import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ScannerModule } from './scanner/scanner.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { ActionsModule } from './actions/actions.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { ScannerModule } from './scanner/scanner.module';
     UserModule,
     AuthModule,
     ScannerModule,
+    DashboardModule,
+    LeaderboardModule,
+    ActionsModule,
   ],
 })
 export class AppModule {}

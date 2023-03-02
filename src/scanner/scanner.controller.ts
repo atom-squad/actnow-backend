@@ -2,6 +2,7 @@ import {
   Controller,
   FileTypeValidator,
   Get,
+  Post,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -19,7 +20,7 @@ export class ScannerController {
   constructor(private readonly scannerService: ScannerService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('emission')
+  @Post('emission')
   @UseInterceptors(FileInterceptor('file'))
   getEmission(
     @UploadedFile(

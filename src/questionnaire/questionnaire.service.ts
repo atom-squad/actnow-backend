@@ -7,12 +7,11 @@ import { User, UserDocument } from 'src/schemas/user.schema';
 export class QuestionnaireService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  
   getHello(): string {
     return 'Hello World!';
   }
 
   async findUsers(): Promise<User[]> {
-    return this.userModel.find().exec();
+    return [];
   }
 }
