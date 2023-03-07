@@ -1,6 +1,7 @@
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { HttpService } from '@nestjs/axios';
+import { EmissionResult } from 'src/interfaces/scanner.interface';
 
 export const getEmissionClimatiq = async (
   label: string,
@@ -20,14 +21,15 @@ export const getEmissionClimatiq = async (
 
   if (data.results.length < 1)
     return {
-      error: `No matches for ${label}`,
+      label: label,
+      error: `No emission found for ${label}`,
     };
-  //console.log('factor', data.results);
-  const result = {
+
+  const result: EmissionResult = {
     label: label,
     name: data.results[0].name,
     category: data.results[0].category,
-    factor: data.results[0].factor,
+    factor: Math.round((data.results[0].factor + Number.EPSILON) * 1000) / 1000,
     unit: data.results[0].unit,
     description: data.results[0].description,
   };
