@@ -32,11 +32,12 @@ export class DashboardService {
 
   async getUserSection(user: any): Promise<UserSectionData> {
     const organization = await this.getDepartmentData(user.department);
+    const updatedUser = await this.userModel.findById({ _id: user.userId });
     const userSectionData: UserSectionData = {
       name: user.name,
       department: organization.departments[0].name,
       organization: organization.name,
-      monthPoints: this.getMonthPoints(user.pointsHistory, this.key),
+      monthPoints: this.getMonthPoints(updatedUser.pointsHistory, this.key),
       rankingPos: await this.leaderboardService.getUserPosition(
         await this.leaderboardService.getPersonalRankingList(),
         user.userId,
@@ -68,7 +69,11 @@ export class DashboardService {
     const departmentUsers = await this.userService.getUsersPerDepartment(
       user.department,
     );
-    let personalMonthPoints = this.getMonthPoints(user.pointsHistory, this.key);
+    const updatedUser = await this.userModel.findById({ _id: user.userId });
+    let personalMonthPoints = this.getMonthPoints(
+      updatedUser.pointsHistory,
+      this.key,
+    );
     const progressData: ProgressData = {
       personalProgress: [
         {
@@ -93,7 +98,7 @@ export class DashboardService {
         })
         .substring(0, 7);
 
-      personalMonthPoints = this.getMonthPoints(user.pointsHistory, key);
+      personalMonthPoints = this.getMonthPoints(updatedUser.pointsHistory, key);
 
       progressData.personalProgress.push({
         month: this.MONTHS[monthYear.getMonth()],
