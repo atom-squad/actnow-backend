@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { AddPointsDto } from 'src/dtos/users.dto';
+
 import {
   Organization,
   OrganizationDocument,
 } from 'src/schemas/organization.schema';
+import { getMonthPoints, MONTHS_MAP_KEY } from 'src/utils/utils';
 import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()
@@ -21,6 +24,28 @@ export class UserService {
         email,
       })
       .exec();
+  }
+
+  async addUserPoints(addPointsDto: AddPointsDto, userId): Promise<any> {
+    console.log(
+      `Adding ${addPointsDto.points} points for ${addPointsDto.origin}`,
+    );
+    const date = MONTHS_MAP_KEY;
+    const update = {
+      $inc: {
+        [`pointsHistory.${date}`]: addPointsDto.points,
+      },
+    };
+
+    const val = await this.userModel.findByIdAndUpdate(
+      { _id: userId },
+      update,
+      { returnDocument: 'after' },
+    );
+
+    return {
+      totalPoints: getMonthPoints(val.pointsHistory, date),
+    };
   }
 
   async listUsers(): Promise<User[]> {
