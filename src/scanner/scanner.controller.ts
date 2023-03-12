@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { EmissionResult } from 'src/interfaces/scanner.interface';
 import { ScannerService } from './scanner.service';
 
 @Controller('scanner')
@@ -39,7 +40,16 @@ export class ScannerController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('factor/:label')
-  getFactor(@Param('label') label: string, @Request() req): Promise<any> {
+  getFactor(
+    @Param('label') label: string,
+    @Request() req,
+  ): Promise<EmissionResult> {
     return this.scannerService.getEmission(label, req.user.email);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('history')
+  getUserScansHistory(@Request() req): Promise<any> {
+    return this.scannerService.getUserScansHistory(req.user.userId);
   }
 }

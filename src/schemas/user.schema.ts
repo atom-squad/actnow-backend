@@ -38,8 +38,9 @@ export class User {
 
   @Prop([
     raw({
-      scanValue: { type: Number },
+      scanValue: { type: String },
       scanObject: { type: String },
+      category: { type: String },
       txDate: { type: Date },
     }),
   ])

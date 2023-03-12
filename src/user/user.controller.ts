@@ -1,7 +1,8 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { Types } from 'mongoose';
+import { AddPointsDto } from 'src/dtos/users.dto';
 
 @Controller('user')
 export class UserController {
@@ -11,6 +12,15 @@ export class UserController {
   @Get(':email')
   getEmail(@Param('email') email: string) {
     return this.userService.getUserByEmail(email);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('points')
+  addUserPoints(
+    @Body() addPointsDto: AddPointsDto,
+    @Request() req,
+  ): Promise<any> {
+    return this.userService.addUserPoints(addPointsDto, req.user.userId);
   }
 
   @UseGuards(AuthGuard('jwt'))
