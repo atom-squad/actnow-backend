@@ -7,7 +7,8 @@ import {
   Organization,
   OrganizationDocument,
 } from 'src/schemas/organization.schema';
-import { getMonthPoints, MONTHS_MAP_KEY } from 'src/utils/utils';
+import { MONTHS_MAP_KEY } from 'src/utils/constants';
+import { getMonthPoints } from 'src/utils/utils';
 import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()

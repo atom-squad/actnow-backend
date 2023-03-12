@@ -12,7 +12,8 @@ import {
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
 import { LeaderboardService } from 'src/leaderboard/leaderboard.service';
-import { getMonthPoints, MONTHS_MAP_KEY, MONTHS } from 'src/utils/utils';
+import { getMonthPoints } from 'src/utils/utils';
+import { MONTHS_MAP_KEY, MONTHS } from 'src/utils/constants';
 
 @Injectable()
 export class DashboardService {
