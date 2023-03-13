@@ -6,9 +6,11 @@ import {
   Organization,
   OrganizationDocument,
 } from 'src/schemas/organization.schema';
-import { RankedUser } from 'src/interfaces/ranking.interface';
+import { RankedUser, RankedDepartment } from 'src/interfaces/ranking.interface';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
+import { MONTHS_MAP_KEY } from 'src/utils/constants';
+import { getMonthPoints } from 'src/utils/utils';
 
 @Injectable()
 export class LeaderboardService {
@@ -19,27 +21,20 @@ export class LeaderboardService {
     private userService: UserService,
   ) {}
 
-  currentDate = new Date().toLocaleDateString('en-CA', {
-    timeZone: 'America/Vancouver',
-  });
-  key = this.currentDate.substring(0, 7);
-
-  getCurrentMonthPoints(pointsHistory: any): number {
-    if (pointsHistory instanceof Map) {
-      return pointsHistory.get(this.key);
-    }
-    return pointsHistory[this.key];
-  }
-
-  async getPersonalRankingList(): Promise<RankedUser[]> {
-    const users = await this.userService.listUsers();
+  async getPersonalRankingList(departmentId): Promise<RankedUser[]> {
+    const filter = {
+      'departments.id': departmentId,
+    };
+    const organization = await this.organizationModel.findOne(filter);
+    const users = await this.userService.listUsersPerOrganization(
+      organization._id,
+    );
     const rankedUsers: RankedUser[] = [];
     users.forEach((user) => {
-      const currentMonthPoints = this.getCurrentMonthPoints(user.pointsHistory);
+      const currentMonthPoints = getMonthPoints(user.points, MONTHS_MAP_KEY);
       const rankedUser: RankedUser = {
-        id: user._id,
-        name: user.name,
-        department: user.department,
+        id: user.id,
+        name: user.userName,
         monthPoints: currentMonthPoints ? currentMonthPoints : 0,
       };
       rankedUsers.push(rankedUser);
@@ -64,5 +59,47 @@ export class LeaderboardService {
       }) + 1;
 
     return position;
+  }
+
+  async getDepartmentsRankingList(departmentId): Promise<RankedDepartment[]> {
+    const filter = {
+      'departments.id': departmentId,
+    };
+    const organization = await this.organizationModel.findOne(filter);
+    const departments = organization.departments;
+    const rankedDepartments: RankedDepartment[] = [];
+
+    for (const department of departments) {
+      const count = await this.userModel.aggregate([
+        {
+          $match: {
+            department: department.id,
+          },
+        },
+        {
+          $group: {
+            _id: '$department',
+            totalPoints: {
+              $sum: `$pointsHistory.${MONTHS_MAP_KEY}`,
+            },
+          },
+        },
+      ]);
+      const dptMonthData = {
+        ...count[0],
+        name: department.name,
+      };
+
+      rankedDepartments.push(dptMonthData);
+    }
+
+    //Sort the array of rankedUsers
+    rankedDepartments.sort((dpt1, dpt2) => {
+      return dpt2.totalPoints - dpt1.totalPoints;
+    });
+
+    console.log(rankedDepartments)
+
+    return rankedDepartments;
   }
 }

@@ -34,7 +34,7 @@ export class DashboardService {
       organization: organization.name,
       monthPoints: getMonthPoints(updatedUser.pointsHistory, MONTHS_MAP_KEY),
       rankingPos: await this.leaderboardService.getUserPosition(
-        await this.leaderboardService.getPersonalRankingList(),
+        await this.leaderboardService.getPersonalRankingList(user.department),
         user.userId,
       ),
     };
