@@ -74,7 +74,7 @@ export class DashboardService {
               user.department,
               MONTHS_MAP_KEY,
             )
-          )[0].totalPoints,
+          ).totalPoints,
         },
       ],
     };
@@ -102,7 +102,7 @@ export class DashboardService {
             user.department,
             key,
           )
-        )[0].totalPoints,
+        ).totalPoints,
       });
     }
 

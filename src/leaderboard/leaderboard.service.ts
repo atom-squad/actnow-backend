@@ -75,7 +75,7 @@ export class LeaderboardService {
         MONTHS_MAP_KEY,
       );
       const dptMonthData = {
-        ...count[0],
+        ...count,
         name: department.name,
       };
 
@@ -109,7 +109,7 @@ export class LeaderboardService {
         },
       },
     ]);
-    return count;
+    return count[0];
   }
 
   async getDptmPosition(rankedDpts: RankedDepartment[], departmentId: number) {
