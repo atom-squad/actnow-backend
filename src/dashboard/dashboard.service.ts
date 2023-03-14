@@ -34,7 +34,7 @@ export class DashboardService {
       organization: organization.name,
       monthPoints: getMonthPoints(updatedUser.pointsHistory, MONTHS_MAP_KEY),
       rankingPos: await this.leaderboardService.getUserPosition(
-        await this.leaderboardService.getPersonalRankingList(),
+        await this.leaderboardService.getPersonalRankingList(user.department),
         user.userId,
       ),
     };
@@ -54,9 +54,6 @@ export class DashboardService {
 
   async getProgressData(user: any): Promise<ProgressData> {
     const monthYear: Date = new Date();
-    const departmentUsers = await this.userService.getUsersPerDepartment(
-      user.department,
-    );
     const updatedUser = await this.userModel.findById({ _id: user.userId });
     let personalMonthPoints = getMonthPoints(
       updatedUser.pointsHistory,
@@ -72,7 +69,12 @@ export class DashboardService {
       departmentProgress: [
         {
           month: MONTHS[monthYear.getMonth()],
-          points: this.calculateDptmPoints(departmentUsers, MONTHS_MAP_KEY),
+          points: (
+            await this.leaderboardService.getDptmUsersTotalPoints(
+              user.department,
+              MONTHS_MAP_KEY,
+            )
+          ).totalPoints,
         },
       ],
     };
@@ -95,21 +97,16 @@ export class DashboardService {
 
       progressData.departmentProgress.push({
         month: MONTHS[monthYear.getMonth()],
-        points: this.calculateDptmPoints(departmentUsers, key),
+        points: (
+          await this.leaderboardService.getDptmUsersTotalPoints(
+            user.department,
+            key,
+          )
+        ).totalPoints,
       });
     }
 
     return progressData;
-  }
-
-  calculateDptmPoints(users: any[], key: string): number {
-    let points = 0;
-    for (const user of users) {
-      const userPoints = getMonthPoints(user.points, key);
-      if (userPoints) points += userPoints;
-    }
-
-    return points;
   }
 
   async getOrganizationActions(departmentId: number): Promise<any> {
