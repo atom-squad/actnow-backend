@@ -25,8 +25,16 @@ export class LeaderboardController {
   @UseGuards(AuthGuard('jwt'))
   @Get('departments_ranking')
   async getDepartmentsRanking(@Request() req): Promise<object> {
-    return this.leaderboardService.getDepartmentsRankingList(
+    const rankedList = await this.leaderboardService.getDepartmentsRankingList(
       req.user.department,
     );
+    const position = await this.leaderboardService.getDptmPosition(
+      rankedList,
+      req.user.department,
+    );
+    return {
+      departmentPosition: position,
+      departmentsRanking: rankedList,
+    };
   }
 }

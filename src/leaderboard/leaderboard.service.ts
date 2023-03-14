@@ -93,13 +93,21 @@ export class LeaderboardService {
       rankedDepartments.push(dptMonthData);
     }
 
-    //Sort the array of rankedUsers
+    //Sort the array of rankedDepartments
     rankedDepartments.sort((dpt1, dpt2) => {
       return dpt2.totalPoints - dpt1.totalPoints;
     });
 
-    console.log(rankedDepartments)
-
     return rankedDepartments;
+  }
+
+  async getDptmPosition(rankedDpts: RankedDepartment[], departmentId: number) {
+    //Find the department's specific position within the ranking
+    const position =
+      rankedDpts.findIndex((department) => {
+        return department._id == departmentId;
+      }) + 1;
+
+    return position;
   }
 }
