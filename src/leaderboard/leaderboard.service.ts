@@ -70,21 +70,10 @@ export class LeaderboardService {
     const rankedDepartments: RankedDepartment[] = [];
 
     for (const department of departments) {
-      const count = await this.userModel.aggregate([
-        {
-          $match: {
-            department: department.id,
-          },
-        },
-        {
-          $group: {
-            _id: '$department',
-            totalPoints: {
-              $sum: `$pointsHistory.${MONTHS_MAP_KEY}`,
-            },
-          },
-        },
-      ]);
+      const count = await this.getDptmUsersTotalPoints(
+        department.id,
+        MONTHS_MAP_KEY,
+      );
       const dptMonthData = {
         ...count[0],
         name: department.name,
@@ -99,6 +88,28 @@ export class LeaderboardService {
     });
 
     return rankedDepartments;
+  }
+
+  async getDptmUsersTotalPoints(
+    departmentId: number,
+    key: string,
+  ): Promise<any> {
+    const count = await this.userModel.aggregate([
+      {
+        $match: {
+          department: departmentId,
+        },
+      },
+      {
+        $group: {
+          _id: '$department',
+          totalPoints: {
+            $sum: `$pointsHistory.${key}`,
+          },
+        },
+      },
+    ]);
+    return count;
   }
 
   async getDptmPosition(rankedDpts: RankedDepartment[], departmentId: number) {
