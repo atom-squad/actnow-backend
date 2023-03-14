@@ -77,6 +77,7 @@ export class UserService {
     const dptmUsers = await this.userModel.find(filter);
     dptmUsers.forEach((user) => {
       dptmUsersData.push({
+        id: user._id,
         userName: user.name,
         points: user.pointsHistory,
         actions: user.actionsDone ? user.actionsDone.length : 0,

@@ -9,7 +9,9 @@ export class LeaderboardController {
   @UseGuards(AuthGuard('jwt'))
   @Get('personal_ranking')
   async getPersonalRanking(@Request() req): Promise<object> {
-    const rankedList = await this.leaderboardService.getPersonalRankingList();
+    const rankedList = await this.leaderboardService.getPersonalRankingList(
+      req.user.department,
+    );
     const position = await this.leaderboardService.getUserPosition(
       rankedList,
       req.user.userId,
@@ -17,6 +19,22 @@ export class LeaderboardController {
     return {
       userPosition: position,
       usersRanking: rankedList,
+    };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('departments_ranking')
+  async getDepartmentsRanking(@Request() req): Promise<object> {
+    const rankedList = await this.leaderboardService.getDepartmentsRankingList(
+      req.user.department,
+    );
+    const position = await this.leaderboardService.getDptmPosition(
+      rankedList,
+      req.user.department,
+    );
+    return {
+      departmentPosition: position,
+      departmentsRanking: rankedList,
     };
   }
 }
