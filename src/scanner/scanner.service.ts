@@ -4,7 +4,8 @@ import { HttpService } from '@nestjs/axios';
 import { getEmissionClimatiq } from 'src/apisClients/climatiq.client';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
+import { EmissionResult } from 'src/interfaces/scanner.interface';
 
 @Injectable()
 export class ScannerService {
@@ -36,10 +37,10 @@ export class ScannerService {
     return result;
   }
 
-  async getEmission(label: string, userEmail: string): Promise<any> {
+  async getEmission(label: string, userEmail: string): Promise<EmissionResult> {
     let tries = 0;
     const regions = ['CA', 'GLOBAL', 'US'];
-    let result = undefined;
+    let result: EmissionResult = undefined;
 
     while (tries < regions.length && (result == undefined || result.error)) {
       result = await getEmissionClimatiq(
@@ -66,8 +67,9 @@ export class ScannerService {
       $addToSet: {
         scansHistory: [
           {
-            scanValue: result.factor,
+            scanValue: `${result.factor} ${result.unit}`,
             scanObject: result.label,
+            category: result.category,
             txDate: new Date().toLocaleDateString('en-CA', {
               timeZone: 'America/Vancouver',
             }),
@@ -76,5 +78,11 @@ export class ScannerService {
       },
     };
     await this.userModel.findOneAndUpdate(filter, update);
+  }
+
+  async getUserScansHistory(userId: Schema.Types.ObjectId): Promise<any[]> {
+    const user = await this.userModel.findById({ _id: userId });
+
+    return user.scansHistory;
   }
 }
