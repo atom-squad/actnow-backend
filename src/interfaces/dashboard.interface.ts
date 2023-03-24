@@ -2,7 +2,7 @@ export interface UserSectionData {
   name: string;
   department: string;
   organization: string;
-  monthPoints: number;
+  totalPoints: number;
   rankingPos: number;
 }
 

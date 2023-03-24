@@ -12,7 +12,7 @@ import {
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
 import { LeaderboardService } from 'src/leaderboard/leaderboard.service';
-import { getMonthPoints } from 'src/utils/utils';
+import { getMonthPoints, getTotalPoints } from 'src/utils/utils';
 import { MONTHS_MAP_KEY, MONTHS } from 'src/utils/constants';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class DashboardService {
       name: user.name,
       department: organization.departments[0].name,
       organization: organization.name,
-      monthPoints: getMonthPoints(updatedUser.pointsHistory, MONTHS_MAP_KEY),
+      totalPoints: getTotalPoints(updatedUser.pointsHistory),
       rankingPos: await this.leaderboardService.getUserPosition(
         await this.leaderboardService.getPersonalRankingList(user.department),
         user.userId,
