@@ -32,6 +32,7 @@ export class DashboardService {
       name: user.name,
       department: organization.departments[0].name,
       organization: organization.name,
+      monthPoints: getMonthPoints(updatedUser.pointsHistory, MONTHS_MAP_KEY),
       totalPoints: getTotalPoints(updatedUser.pointsHistory),
       rankingPos: await this.leaderboardService.getUserPosition(
         await this.leaderboardService.getPersonalRankingList(user.department),
