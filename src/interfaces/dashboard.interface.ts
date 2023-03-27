@@ -3,6 +3,7 @@ export interface UserSectionData {
   department: string;
   organization: string;
   monthPoints: number;
+  totalPoints: number;
   rankingPos: number;
 }
 
