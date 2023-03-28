@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, ConsoleLogger } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from '../schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -74,7 +74,7 @@ export class AuthService {
 
     const user = await this.validateUser(email, password);
 
-    if (!user) return null;
+    if (!user) throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
 
     const jwt = await this.jwtService.signAsync({ user });
 
