@@ -5,11 +5,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SignupDto, SigninDto } from 'src/dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import {
+  Organization,
+  OrganizationDocument,
+} from 'src/schemas/organization.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Organization.name)
+    private organizationModel: Model<OrganizationDocument>,
     private jwtService: JwtService,
   ) {}
 
@@ -73,5 +79,10 @@ export class AuthService {
     const jwt = await this.jwtService.signAsync({ user });
 
     return { token: jwt };
+  }
+
+  async getOrgDepartments(): Promise<any> {
+    const organizations = await this.organizationModel.find();
+    return organizations;
   }
 }

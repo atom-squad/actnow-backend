@@ -7,6 +7,7 @@ import { User, UserSchema } from '../schemas/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtGuard } from './guards/jwt.guard';
 import { JwtStrategy } from './guards/jwt.strategy';
+import { Organization, OrganizationSchema } from 'src/schemas/organization.schema';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { JwtStrategy } from './guards/jwt.strategy';
       {
         name: User.name,
         schema: UserSchema,
+      },
+      {
+        name: Organization.name,
+        schema: OrganizationSchema,
       },
     ]),
   ],
