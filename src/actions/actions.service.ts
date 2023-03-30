@@ -53,7 +53,7 @@ export class ActionsService {
         const user = await this.userModel.findById({
             _id
         }).exec()
-
+    
         const userActions = user.actionsDone
         
         const userActionsDetails = []
@@ -67,8 +67,10 @@ export class ActionsService {
             }
             userActionsDetails.push(actionD);
         }
-
+    
+        userActionsDetails.sort((a, b) => b.txDate - a.txDate);
+    
         return userActionsDetails
-
+    
     }
 }
