@@ -76,7 +76,16 @@ export class AuthService {
 
     if (!user) throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
 
-    const jwt = await this.jwtService.signAsync({ user });
+    const payload = {
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        department: user.department,
+      },
+    };
+
+    const jwt = await this.jwtService.signAsync(payload);
 
     return { token: jwt };
   }
