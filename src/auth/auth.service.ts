@@ -1,15 +1,21 @@
-import { Injectable, BadRequestException, ConsoleLogger } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from '../schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SignupDto, SigninDto } from 'src/dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import {
+  Organization,
+  OrganizationDocument,
+} from 'src/schemas/organization.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Organization.name)
+    private organizationModel: Model<OrganizationDocument>,
     private jwtService: JwtService,
   ) {}
 
@@ -68,10 +74,24 @@ export class AuthService {
 
     const user = await this.validateUser(email, password);
 
-    if (!user) return null;
+    if (!user) throw new HttpException('Wrong credentials', HttpStatus.UNAUTHORIZED);
 
-    const jwt = await this.jwtService.signAsync({ user });
+    const payload = {
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        department: user.department,
+      },
+    };
+
+    const jwt = await this.jwtService.signAsync(payload);
 
     return { token: jwt };
+  }
+
+  async getOrgDepartments(): Promise<any> {
+    const organizations = await this.organizationModel.find();
+    return organizations;
   }
 }
