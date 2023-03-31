@@ -1,4 +1,5 @@
 import * as AWS from 'aws-sdk';
+import sharp from 'sharp';
 
 const config = new AWS.Config({
   accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -23,7 +24,8 @@ const params = {
 export const execRekognitionReq = async (
   picture: Express.Multer.File,
 ): Promise<any[]> => {
-  params.Image.Bytes = picture.buffer;
+  const image = sharp(picture.path);
+  params.Image.Bytes = image.resize({ width: 1800 }).toBuffer;
   const labelsData = [];
   return new Promise((success, failure) => {
     rekognitionClient.detectLabels(params, function (err, response) {
