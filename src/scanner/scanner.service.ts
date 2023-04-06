@@ -60,7 +60,7 @@ export class ScannerService {
     }
 
     if (result.error) {
-      throw new HttpException(result, HttpStatus.NOT_FOUND);
+      throw new HttpException(result.error, HttpStatus.NOT_FOUND);
     }
 
     return result;
