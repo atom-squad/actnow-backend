@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { execRekognitionReq } from 'src/apisClients/rekognition.client';
 import { HttpService } from '@nestjs/axios';
 import { getEmissionClimatiq } from 'src/apisClients/climatiq.client';
@@ -29,9 +29,10 @@ export class ScannerService {
         pos++;
       }
     } else {
-      result = {
-        Error: 'Sorry, we could not recognize your image',
-      };
+      throw new HttpException(
+        'Sorry, we could not recognize your image',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     return result;
@@ -56,6 +57,10 @@ export class ScannerService {
         await this.saveTxInDB(result, userEmail);
         break;
       }
+    }
+
+    if (result.error) {
+      throw new HttpException(result.error, HttpStatus.NOT_FOUND);
     }
 
     return result;
